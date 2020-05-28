@@ -26,7 +26,7 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.delegate = self
+        messageTextField.delegate = self
         
         
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier:"Cell")
