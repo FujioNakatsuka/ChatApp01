@@ -38,7 +38,7 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         
         //slector???基本的なことがわかっていない！
         
-        NotificationCenter.default.addObserver(self, selector: #selector(ChatViewController.keyboardWillHideNotification(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatViewController.keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
             
         fetchChatData()
         
@@ -175,7 +175,7 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
             let sender = snapShot.value(forKey: "sender")
             
             let message = Message()
-            message.message = text as! String
+            message.Message = text as! String
             message.sender = sender as! String
             self.chatArray.append(message)
             self.tableView.reloadData()
