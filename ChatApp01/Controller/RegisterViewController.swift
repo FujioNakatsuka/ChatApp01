@@ -25,23 +25,20 @@ class RegisterViewController: UIViewController {
     
     @IBAction func registerNewUser(_ sender: Any) {
         
-        
-        
-        
+        startAnimation()
+ 
         Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
             if error != nil{
                 print(error as Any)
             }else{
          print("ユーザーの作成が成功しました！")
+
+        self.stopAnimation()
+       //⭐️stopAnimation()は66行目で宣言しているのだが。。。
                 
-                self.stopAnimation()
-              //自分自身のクラス。。。クラスはAnimation？
                 self.performSegue(withIdentifier: "chat", sender: nil)
                
-                
-            }
-            
-        
+             
         }
         
     }
@@ -72,4 +69,4 @@ class RegisterViewController: UIViewController {
     }
     
     
-
+}

@@ -10,7 +10,7 @@ import UIKit
 import ChameleonFramework
 import Firebase
 class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate{
-    
+    //UITextFieldDelegateはTextFieldの操作に関するプロトコル
     
 
     @IBOutlet weak var tableView: UITableView!
@@ -20,6 +20,8 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
     let screensize = UIScreen.main.bounds.size
     
     var chatArray = [Message]()
+    //Message.swiftを作成した事で、sender,messageを保持できる。もしMessage .swifが無ければ？sender,messageの値を都度取得できない？
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +29,7 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         tableView.delegate = self
         tableView.dataSource = self
         messageTextField.delegate = self
+        //このselfはChatViewControllerを指す
         
         
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier:"Cell")
@@ -34,21 +37,28 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
 
         tableView.estimatedRowHeight = 75
         
+        //＃キーボードの管理
+        //キーボードを出す。keyboardWillShowNotificationが呼ばれる時にkeyboardWillShow メソッドが選ばれる
         NotificationCenter.default.addObserver(self, selector: #selector(ChatViewController.keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
-        //slector???基本的なことがわかっていない！
         
+        //キーボードを閉じる
         NotificationCenter.default.addObserver(self, selector: #selector(ChatViewController.keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
-            
+         
+        //Firebaseからデータをfetch(取得)
         fetchChatData()
+      
         
         tableView.separatorStyle = .none
         
     }
     
     @objc func keyboardWillShow(_ notification:NSNotification){
+        //引数としてNSNotification型が取れる、#selectorはobjective C の名残なので@objcが文頭に必要
+        
         
         let keyboardHeight = ((notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as Any) as AnyObject).cgRectValue.height
+        
         
         messageTextField.frame.origin.y = screensize.height -  keyboardHeight - messageTextField.frame.height
        
@@ -89,11 +99,18 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
     func tableView(_ tableView: UITableView, numberOfRowsInsection section: Int) -> Int{
         
         return chatArray.count
+        //メッセージの数、クラスMessageの中のsenderはUserNameで良いのか？
     
     
     }
         
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
         
+        return 1
+        
+    }
+    
         
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -145,10 +162,12 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         let chatDB = Database.database().reference().child("chats")
         
         let messageInfo = ["sender": Auth.auth().currentUser?.email,"message":messageTextField.text!]
-        
+        //キーバリュー型（Dictionary型：キーとバリューの値を同時に持つ）で内容を送信
+                
         chatDB.childByAutoId().setValue(messageInfo){(error, result) in
+            //chatDBに入れる
             
-            if error != nil
+            if error != nil{
                 print(error)
                 
         }else{
@@ -167,12 +186,15 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
     func fetchChatData(){
         
         let fetchDataRef = Database.database().reference().child("chats")
+        //データベースのある場所（url）を指定
         
         fetchDataRef.observe(.childAdded){(snapShot) in
+            //更新があった時だけ更新
             
             let snapShotData = snapShot.value as! AnyObject
             let text = snapShot.value(forKey: "message")
             let sender = snapShot.value(forKey: "sender")
+            //forekeyでmessage,senderから値を取ってくる
             
             let message = Message()
             message.Message = text as! String
@@ -189,3 +211,4 @@ class ChatViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
     
 }
 
+}

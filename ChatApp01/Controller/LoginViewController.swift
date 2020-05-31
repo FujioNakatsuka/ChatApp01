@@ -16,28 +16,35 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     
     let animationView = AnimationView()
+    //LottieはJSONを読み込んで作動させるライブラリ
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
     }
     
 
     @IBAction func login(_ sender: Any) {
         
         startAnimation()
+        //ログインに成功したらアニメーションを動かす。関数はfunc startAnimation()
         
-        Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
+        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
            if error != nil{
                print("error")
            }else{
-        print("ログインに成功しました")
-               
-               self.stopAnimation()
-            self.performSegue(withIdentifier: "chat", sender: nil)
+        print("ログインに成功")
             
-                
+//Auth.auth()は、Authがクラスでauthがクラス名？
+//.createUserは、ライブラリFirebaseのメソッド（関数）
+//⭐️{ (user, error) in if error != nil{print("error")}   ここの理解ができない。
+//Firebaseから返ってくるのはuser認証に成功した場合のみユーザー情報が返ってくる？そしてerrorなら返り値がないのでnilという認識で良いか？
+//if error != nil の「！＝」の！は何を表している（どういう意味または機能？）のか。。。
+   
+               self.stopAnimation()
+//アニメーションの停止、ログイン成功でも失敗でも停止。
+            self.performSegue(withIdentifier: "chat", sender: nil)
+//segue(id)chatを動かしてregisterViewControllerに戻る。senderがnilとは、特定のボタンなどのアクションに依存せず順番で実行だから？
                 
                 
             }
@@ -50,10 +57,14 @@ class LoginViewController: UIViewController {
     func startAnimation(){
         
         let animation = Animation.named("loading")
+        //Lottieの仕様、ローディングをanimationに入れる。
+        
         animationView.frame = CGRect(
             x: 0, y: 0,width: view.frame.size.width,height: view.frame.size.height/1.5)
 
         animationView.animation = animation
+        //ローディングという名前のアニメーションには、animarionViewが持つプロパティ「makeAnimationLayer」（動作）を入れる。
+        
         animationView.contentMode = .scaleAspectFit
         
         animationView.loopMode = .loop
