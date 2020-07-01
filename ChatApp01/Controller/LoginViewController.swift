@@ -27,25 +27,17 @@ class LoginViewController: UIViewController {
     @IBAction func login(_ sender: Any) {
         
         startAnimation()
-        //ログインに成功したらアニメーションを動かす。関数はfunc startAnimation()
-        
+        //ログインに成功したらアニメーションを動かす。
         Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
            if error != nil{
                print("error")
            }else{
         print("ログインに成功")
-            
-//Auth.auth()は、Authがクラスでauthがクラス名？
-//.createUserは、ライブラリFirebaseのメソッド（関数）
-//⭐️{ (user, error) in if error != nil{print("error")}   ここの理解ができない。
-//Firebaseから返ってくるのはuser認証に成功した場合のみユーザー情報が返ってくる？そしてerrorなら返り値がないのでnilという認識で良いか？
-//if error != nil の「！＝」の！は何を表している（どういう意味または機能？）のか。。。
-   
+//⭐️ログインに失敗してもエラーがでず、アニメーションが動き続け、その後にクラッシュ
                self.stopAnimation()
-//アニメーションの停止、ログイン成功でも失敗でも停止。
+//⭐️アニメーションの停止、ログイン成功でも失敗でも停止のはずが
             self.performSegue(withIdentifier: "chat", sender: nil)
-//segue(id)chatを動かしてregisterViewControllerに戻る。senderがnilとは、特定のボタンなどのアクションに依存せず順番で実行だから？
-                
+//segue(id)chatを動かしてLoginViewControllerに戻る。
                 
             }
 
@@ -63,7 +55,7 @@ class LoginViewController: UIViewController {
             x: 0, y: 0,width: view.frame.size.width,height: view.frame.size.height/1.5)
 
         animationView.animation = animation
-        //ローディングという名前のアニメーションには、animarionViewが持つプロパティ「makeAnimationLayer」（動作）を入れる。
+        //ローディングという名前のアニメーションには、animationViewが持つプロパティ「makeAnimationLayer」（動作）を入れる。
         
         animationView.contentMode = .scaleAspectFit
         

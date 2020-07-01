@@ -11,6 +11,6 @@ import Foundation
 class Message{
 
 var sender:String = ""
-var Message:String = ""
+var message:String = ""
 
 }
